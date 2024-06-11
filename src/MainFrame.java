@@ -456,7 +456,7 @@ public class MainFrame extends JFrame {
 
 
 
-
+//fait-arch se colo al codigo <3
         deleteButton.addActionListener(e -> {
             // Solicitar ID del producto a eliminar
             String idInput = JOptionPane.showInputDialog(this, "Ingrese el ID del producto que desea eliminar:", "Eliminar Producto", JOptionPane.QUESTION_MESSAGE);
