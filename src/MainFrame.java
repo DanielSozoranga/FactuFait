@@ -1,7 +1,5 @@
 import javax.swing.*;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.event.TableModelEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,9 +50,6 @@ public class MainFrame extends JFrame {
         menuBar.add(navegacionMenu);
 
         JMenuItem menuMenuItem = new JMenuItem("Inicio");
-        JMenuItem opcion1MenuItem = new JMenuItem("Opción 1");
-        JMenuItem opcion2MenuItem = new JMenuItem("Opción 2");
-        JMenuItem opcion3MenuItem = new JMenuItem("Opción 3");
 
         menuMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -63,31 +58,8 @@ public class MainFrame extends JFrame {
             }
         });
 
-        opcion1MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para la opción 1
-            }
-        });
-
-        opcion2MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para la opción 2
-            }
-        });
-
-        opcion3MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para la opción 3
-            }
-        });
-
         navegacionMenu.add(menuMenuItem);
-        navegacionMenu.add(opcion1MenuItem);
-        navegacionMenu.add(opcion2MenuItem);
-        navegacionMenu.add(opcion3MenuItem);
+
 
         // Configuración del botón Facturación
         JMenuItem facturacionMenuItem = new JMenuItem("Facturación");
@@ -178,27 +150,27 @@ public class MainFrame extends JFrame {
 
         JLabel direccionLabel = new JLabel("Dirección:");
         JTextField direccionField = new JTextField();
-        direccionField.setEditable(false);
+        direccionField.setEditable(true);
 
         JLabel telefonoLabel = new JLabel("Teléfono:");
         JTextField telefonoField = new JTextField();
-        telefonoField.setEditable(false);
+        telefonoField.setEditable(true);
 
         JLabel correoLabel = new JLabel("Correo:");
         JTextField correoField = new JTextField();
-        correoField.setEditable(false);
+        correoField.setEditable(true);
 
         JLabel rucLabel = new JLabel("RUC:");
         JTextField rucField = new JTextField();
-        rucField.setEditable(false);
+        rucField.setEditable(true);
 
         JLabel fechaLabel = new JLabel("Fecha:");
         JTextField fechaField = new JTextField();
-        fechaField.setEditable(false);
+        fechaField.setEditable(true);
 
         JLabel nroautorizacionLabel = new JLabel("Factura ID:");
         JTextField nroautorizacionField = new JTextField();
-        nroautorizacionField.setEditable(false);
+        nroautorizacionField.setEditable(true);
 
         infoPanel.add(razonSocialLabel);
         infoPanel.add(razonSocialField);
@@ -238,7 +210,7 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 20, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 20, 10));
         JButton addButton = new JButton("Añadir");
         JButton deleteButton = new JButton("Eliminar");
         JButton totalButton = new JButton("Total");
@@ -248,7 +220,6 @@ public class MainFrame extends JFrame {
         buttonPanel.add(deleteButton);
         buttonPanel.add(totalButton);
         buttonPanel.add(guardarButton);
-
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -342,29 +313,23 @@ public class MainFrame extends JFrame {
         JScrollPane tableScrollPane = new JScrollPane(productTable);
 
         // Añadir TableModelListener para calcular el valor
-        tableModel.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                int row = e.getFirstRow();
-                int column = e.getColumn();
+        tableModel.addTableModelListener(e -> {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
 
-                // Verificar que la columna editada sea la de cantidad o precio
-                if (column == 2 || column == 3) {
-                    try {
-                        int cantidad = Integer.parseInt(tableModel.getValueAt(row, 2).toString());
-                        double precio = Double.parseDouble(tableModel.getValueAt(row, 3).toString());
-                        double valor = cantidad * precio;
-                        tableModel.setValueAt(valor, row, 4);
-                    } catch (NumberFormatException ex) {
-                        // Manejar el caso en que el valor ingresado no es un número válido
-                        tableModel.setValueAt("", row, 4);
-                    }
+            // Verificar que la columna editada sea la de cantidad o precio
+            if (column == 2 || column == 3) {
+                try {
+                    int cantidad = Integer.parseInt(tableModel.getValueAt(row, 2).toString());
+                    double precio = Double.parseDouble(tableModel.getValueAt(row, 3).toString());
+                    double valor = cantidad * precio;
+                    tableModel.setValueAt(valor, row, 4);
+                } catch (NumberFormatException ex) {
+                    // Manejar el caso en que el valor ingresado no es un número válido
+                    tableModel.setValueAt("", row, 4);
                 }
             }
         });
-
-
-
 
         addButton.addActionListener(e -> {
             String productoId = JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:", "Añadir Producto", JOptionPane.PLAIN_MESSAGE);
@@ -413,7 +378,7 @@ public class MainFrame extends JFrame {
         gbc.weighty = 0;
         facturacionPanel.add(buttonPanel, gbc);
 
-// Crear el panel para los totales
+        // Crear el panel para los totales
         JPanel totalPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         JLabel totalSinIvaLabel = new JLabel("Total sin IVA:");
         JTextField totalSinIvaField = new JTextField();
@@ -428,13 +393,14 @@ public class MainFrame extends JFrame {
         totalPanel.add(totalConIvaLabel);
         totalPanel.add(totalConIvaField);
 
-// Añadir el panel de totales a la esquina inferior izquierda
+        // Añadir el panel de totales a la esquina inferior izquierda
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         facturacionPanel.add(totalPanel, gbc);
 
+        // En el listener del botón "Total"
         totalButton.addActionListener(e -> {
             double totalSinIva = 0.0;
             double ivaRate = 0.15; // Tasa de IVA del 15%
@@ -454,9 +420,6 @@ public class MainFrame extends JFrame {
             totalConIvaField.setText(String.format("%.2f", totalConIva));
         });
 
-
-
-//fait-arch se colo al codigo <3
         deleteButton.addActionListener(e -> {
             // Solicitar ID del producto a eliminar
             String idInput = JOptionPane.showInputDialog(this, "Ingrese el ID del producto que desea eliminar:", "Eliminar Producto", JOptionPane.QUESTION_MESSAGE);
@@ -486,15 +449,6 @@ public class MainFrame extends JFrame {
             }
         });
 
-
-
-        totalButton.addActionListener(e -> {
-            double total = 0.0;
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                total += (double) tableModel.getValueAt(i, 4);
-            }
-        });
-
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -503,6 +457,96 @@ public class MainFrame extends JFrame {
 
         fechaField.setText(LocalDate.now().toString());
         nroautorizacionField.setText(generateRandomString(20));
+
+        guardarButton.addActionListener(e -> {
+            String razonSocial = razonSocialField.getText();
+            String direccion = direccionField.getText();
+            String telefono = telefonoField.getText();
+            String correo = correoField.getText();
+            String ruc = rucField.getText();
+            String fecha = fechaField.getText();
+            String nroautorizacion = nroautorizacionField.getText();
+            String clienteId = clienteIdField.getText();
+
+            if (clienteId.isEmpty() || tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos y agregue productos a la factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Calcular los totales
+            double totalSinIva = 0.0;
+            double ivaRate = 0.15; // Tasa de IVA del 15%
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                try {
+                    double valor = Double.parseDouble(tableModel.getValueAt(i, 4).toString());
+                    totalSinIva += valor;
+                } catch (NumberFormatException ex) {
+                    // Ignorar filas con valores inválidos
+                }
+            }
+            double totalConIva = totalSinIva * (1 + ivaRate);
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                connection.setAutoCommit(false); // Iniciar transacción
+
+                // Insertar datos en la tabla Factura
+                String insertFacturaQuery = "INSERT INTO Factura (Razon_Social, Direccion, Telefono, Correo, RUC, Fecha, Nro_Autorizacion, Cliente_ID, total_sin_iva, total_con_iva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement facturaStatement = connection.prepareStatement(insertFacturaQuery, Statement.RETURN_GENERATED_KEYS)) {
+                    facturaStatement.setString(1, razonSocial);
+                    facturaStatement.setString(2, direccion);
+                    facturaStatement.setString(3, telefono);
+                    facturaStatement.setString(4, correo);
+                    facturaStatement.setString(5, ruc);
+                    facturaStatement.setString(6, fecha);
+                    facturaStatement.setString(7, nroautorizacion);
+                    facturaStatement.setString(8, clienteId);
+                    facturaStatement.setDouble(9, totalSinIva);
+                    facturaStatement.setDouble(10, totalConIva);
+
+                    int affectedRows = facturaStatement.executeUpdate();
+                    if (affectedRows == 0) {
+                        throw new SQLException("La creación de la factura falló, no se creó ninguna fila.");
+                    }
+
+                    ResultSet generatedKeys = facturaStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        long facturaId = generatedKeys.getLong(1);
+
+                        // Insertar detalles de la factura en la tabla DetalleFactura
+                        String insertDetalleQuery = "INSERT INTO DetalleFactura (Factura_ID, Productos_ID, Cantidad, Precio, Valor) VALUES (?, ?, ?, ?, ?)";
+                        try (PreparedStatement detalleStatement = connection.prepareStatement(insertDetalleQuery)) {
+                            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                                String productosId = tableModel.getValueAt(i, 0).toString();
+                                int cantidad = Integer.parseInt(tableModel.getValueAt(i, 2).toString());
+                                double precio = Double.parseDouble(tableModel.getValueAt(i, 3).toString());
+                                double valor = cantidad * precio;
+
+                                detalleStatement.setLong(1, facturaId);
+                                detalleStatement.setString(2, productosId);
+                                detalleStatement.setInt(3, cantidad);
+                                detalleStatement.setDouble(4, precio);
+                                detalleStatement.setDouble(5, valor);  // Insertar el valor calculado
+                                detalleStatement.addBatch();
+                            }
+                            detalleStatement.executeBatch();
+                        }
+                    } else {
+                        throw new SQLException("La creación de la factura falló, no se obtuvieron las claves generadas.");
+                    }
+
+                    connection.commit(); // Confirmar la transacción
+                    JOptionPane.showMessageDialog(this, "Factura guardada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } catch (SQLException ex) {
+                    connection.rollback(); // Revertir la transacción en caso de error
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error al guardar la factura: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
 
         JScrollPane scrollPane = new JScrollPane(facturacionPanel);
         mainPanel.add(scrollPane, "facturacionPanel");
