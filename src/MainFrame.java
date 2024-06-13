@@ -11,8 +11,6 @@ import java.sql.Statement;
 import java.util.Random;
 import java.time.LocalDate;
 
-
-
 public class MainFrame extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
@@ -20,10 +18,12 @@ public class MainFrame extends JFrame {
     private JTable productosTable;
 
     public MainFrame() {
+        // Configuración inicial de la ventana principal
         setTitle("Interfaz Gráfica con Base de Datos");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Inicialización del layout de tarjeta y el panel principal
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
@@ -39,39 +39,27 @@ public class MainFrame extends JFrame {
         // Crear el panel de Facturación
         createFacturacionPanel();
 
+        // Agregar el panel principal a la ventana
         add(mainPanel);
     }
 
+    // Crear la barra de menú
     private void createMenuPanel() {
         JMenuBar menuBar = new JMenuBar();
 
-        // Agregar la barra de navegación
-        JMenu navegacionMenu = new JMenu("Navegación");
-        menuBar.add(navegacionMenu);
-
-        JMenuItem menuMenuItem = new JMenuItem("Inicio");
-
-        menuMenuItem.addActionListener(new ActionListener() {
+        // Agregar el botón Inicio directamente en la barra de menú
+        JButton inicioButton = new JButton("Inicio");
+        inicioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Mostrar el panel del menú principal al hacer clic en el botón
                 cardLayout.show(mainPanel, "menuPanel");
             }
         });
+        menuBar.add(inicioButton);
 
-        navegacionMenu.add(menuMenuItem);
-
-
-        // Configuración del botón Facturación
-        JMenuItem facturacionMenuItem = new JMenuItem("Facturación");
-        facturacionMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "facturacionPanel");
-            }
-        });
-        navegacionMenu.add(facturacionMenuItem);
-
-        // Agregar la barra de navegación a la ventana
+        // Agregar la barra de menú a la ventana
         setJMenuBar(menuBar);
 
 
@@ -85,18 +73,24 @@ public class MainFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
+
+        // Crear y configurar el botón Clientes
         JButton clientesButton = new JButton("Clientes");
         clientesButton.setFont(new Font("Arial", Font.PLAIN, 40)); // Aumenta el tamaño de la fuente
         clientesButton.setPreferredSize(new Dimension(300, 120)); // Ajusta las dimensiones del botón
         clientesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Mostrar el panel de Clientes y cargar datos de la base de datos
                 cardLayout.show(mainPanel, "clientesPanel");
                 fetchDataFromDatabase("Clientes", clientesTable, "Clientes_ID", "Clientes_Nombre", "Clientes_Apellido", "Clientes_Correo", "Clientes_Telefono", "Clientes_Direccion");
             }
         });
         menuPanel.add(clientesButton, gbc);
 
+
+        // Crear y configurar el botón Productos
         gbc.gridx = 1;
         JButton productosButton = new JButton("Productos");
         productosButton.setFont(new Font("Arial", Font.PLAIN, 40));
@@ -104,8 +98,10 @@ public class MainFrame extends JFrame {
         productosButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Mostrar el panel de Productos y cargar datos de la base de datos
                 cardLayout.show(mainPanel, "productosPanel");
-                fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca", "Productos_Cantidad_Unidad", "Productos_IVA", "Productos_Stock");
+                fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca");
             }
         });
         menuPanel.add(productosButton, gbc);
@@ -119,16 +115,19 @@ public class MainFrame extends JFrame {
         facturacionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Mostrar el panel de Facturación
                 cardLayout.show(mainPanel, "facturacionPanel");
             }
         });
         menuPanel.add(facturacionButton, gbc);
 
+        // Agregar el panel del menú principal al panel principal
         mainPanel.add(menuPanel, "menuPanel");
         cardLayout.show(mainPanel, "menuPanel");
     }
 
     private void createFacturacionPanel() {
+        // Crear el panel de facturación con GridBagLayout
         JPanel facturacionPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -136,6 +135,7 @@ public class MainFrame extends JFrame {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
+        // Crear y configurar el título del panel
         JLabel titleLabel = new JLabel("Papelería DAKAEL", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
         gbc.gridx = 0;
@@ -143,6 +143,7 @@ public class MainFrame extends JFrame {
         gbc.gridwidth = 3;
         facturacionPanel.add(titleLabel, gbc);
 
+        // Crear el panel de información de la empresa
         JPanel infoPanel = new JPanel(new GridLayout(7, 2, 10, 10));
         JLabel razonSocialLabel = new JLabel("Razón Social:");
         JTextField razonSocialField = new JTextField();
@@ -150,28 +151,29 @@ public class MainFrame extends JFrame {
 
         JLabel direccionLabel = new JLabel("Dirección:");
         JTextField direccionField = new JTextField();
-        direccionField.setEditable(true);
+        direccionField.setEditable(false);
 
         JLabel telefonoLabel = new JLabel("Teléfono:");
         JTextField telefonoField = new JTextField();
-        telefonoField.setEditable(true);
+        telefonoField.setEditable(false);
 
         JLabel correoLabel = new JLabel("Correo:");
         JTextField correoField = new JTextField();
-        correoField.setEditable(true);
+        correoField.setEditable(false);
 
         JLabel rucLabel = new JLabel("RUC:");
         JTextField rucField = new JTextField();
-        rucField.setEditable(true);
+        rucField.setEditable(false);
 
         JLabel fechaLabel = new JLabel("Fecha:");
         JTextField fechaField = new JTextField();
-        fechaField.setEditable(true);
+        fechaField.setEditable(false);
 
         JLabel nroautorizacionLabel = new JLabel("Factura ID:");
         JTextField nroautorizacionField = new JTextField();
-        nroautorizacionField.setEditable(true);
+        nroautorizacionField.setEditable(false);
 
+        // Añadir los campos de información de la empresa al panel
         infoPanel.add(razonSocialLabel);
         infoPanel.add(razonSocialField);
         infoPanel.add(direccionLabel);
@@ -193,6 +195,7 @@ public class MainFrame extends JFrame {
         gbc.weightx = 0.5;
         facturacionPanel.add(infoPanel, gbc);
 
+        // Conectar a la base de datos y obtener la información de la empresa
         try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT Empresa_RazonSocial, Empresa_Direccion, Empresa_Telefono, Empresa_Correo, Empresa_RUC FROM Empresa";
             try (Statement statement = connection.createStatement();
@@ -210,16 +213,20 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+        // Crear el panel de botones
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 20, 10));
         JButton addButton = new JButton("Añadir");
         JButton deleteButton = new JButton("Eliminar");
         JButton totalButton = new JButton("Total");
         JButton guardarButton = new JButton("Guardar");
+        JButton nuevaFacturaButton = new JButton("Nueva Factura");
 
+        // Añadir los botones al panel
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(totalButton);
         buttonPanel.add(guardarButton);
+        buttonPanel.add(nuevaFacturaButton);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -280,30 +287,36 @@ public class MainFrame extends JFrame {
         obtenerDatosButton.addActionListener(e -> {
             String clienteId = clienteIdField.getText();
 
-            if (clienteId.isEmpty()) {
+            if (clienteId.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID de cliente.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                String query = "SELECT Clientes_Nombre, Clientes_Apellido, Clientes_Correo, Clientes_Telefono, Clientes_Direccion FROM Clientes WHERE Clientes_ID = ?";
-                try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                    preparedStatement.setString(1, clienteId);
-                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                        if (resultSet.next()) {
-                            clienteNombreField.setText(resultSet.getString("Clientes_Nombre"));
-                            clienteApellidoField.setText(resultSet.getString("Clientes_Apellido"));
-                            clienteCorreoField.setText(resultSet.getString("Clientes_Correo"));
-                            clienteTelefonoField.setText(resultSet.getString("Clientes_Telefono"));
-                            clienteDireccionField.setText(resultSet.getString("Clientes_Direccion"));
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Cliente no encontrado.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                int clientId = Integer.parseInt(clienteId.trim());
+
+                try (Connection connection = DatabaseConnection.getConnection()) {
+                    String query = "SELECT Clientes_Nombre, Clientes_Apellido, Clientes_Correo, Clientes_Telefono, Clientes_Direccion FROM Clientes WHERE Clientes_ID = ?";
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                        preparedStatement.setInt(1, clientId);
+                        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                            if (resultSet.next()) {
+                                clienteNombreField.setText(resultSet.getString("Clientes_Nombre"));
+                                clienteApellidoField.setText(resultSet.getString("Clientes_Apellido"));
+                                clienteCorreoField.setText(resultSet.getString("Clientes_Correo"));
+                                clienteTelefonoField.setText(resultSet.getString("Clientes_Telefono"));
+                                clienteDireccionField.setText(resultSet.getString("Clientes_Direccion"));
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Cliente no encontrado.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                            }
                         }
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID de cliente válido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -311,6 +324,21 @@ public class MainFrame extends JFrame {
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         JTable productTable = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(productTable);
+
+        // Añadir InputVerifier a la columna "Cantidad"
+        productTable.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean stopCellEditing() {
+                String value = (String) getCellEditorValue();
+                try {
+                    Integer.parseInt(value);
+                    return super.stopCellEditing();
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Cantidad debe ser un número entero", "Error de entrada", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        });
 
         // Añadir TableModelListener para calcular el valor
         tableModel.addTableModelListener(e -> {
@@ -331,45 +359,67 @@ public class MainFrame extends JFrame {
             }
         });
 
+
         addButton.addActionListener(e -> {
-            String productoId = JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:", "Añadir Producto", JOptionPane.PLAIN_MESSAGE);
+            while (true) {
+                // Solicitar ID del producto a añadir
+                String productoId = JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:", "Añadir Producto", JOptionPane.PLAIN_MESSAGE);
 
-            if (productoId != null && !productoId.trim().isEmpty()) {
-                boolean exists = false;
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    if (tableModel.getValueAt(i, 0).equals(productoId)) {
-                        exists = true;
-                        break;
-                    }
-                }
-
-                if (exists) {
-                    JOptionPane.showMessageDialog(this, "El producto ya está en la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                if (productoId == null) {
+                    // Si el usuario cancela la entrada, salimos del bucle
                     return;
                 }
 
-                try (Connection connection = DatabaseConnection.getConnection()) {
-                    String query = "SELECT Productos_Nombre, Productos_Precio FROM Productos WHERE Productos_ID = ?";
-                    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                        preparedStatement.setString(1, productoId);
-                        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                            if (resultSet.next()) {
-                                String productosNombre = resultSet.getString("Productos_Nombre");
-                                double productosPrecio = resultSet.getDouble("Productos_Precio");
+                if (productoId.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
 
-                                // Agregar fila a la tabla con cantidad predeterminada de 1
-                                tableModel.addRow(new Object[]{productoId, productosNombre, 1, productosPrecio, productosPrecio});
-                            } else {
-                                JOptionPane.showMessageDialog(this, "Producto no encontrado.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                            }
+                try {
+                    int productId = Integer.parseInt(productoId.trim());
+
+                    boolean exists = false;
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        if (Integer.parseInt((String) tableModel.getValueAt(i, 0)) == productId) {
+                            exists = true;
+                            break;
                         }
                     }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+
+                    if (exists) {
+                        JOptionPane.showMessageDialog(this, "El producto ya está en la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    try (Connection connection = DatabaseConnection.getConnection()) {
+                        String query = "SELECT Productos_Nombre, Productos_Precio FROM Productos WHERE Productos_ID = ?";
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                            preparedStatement.setInt(1, productId);
+                            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                                if (resultSet.next()) {
+                                    String productosNombre = resultSet.getString("Productos_Nombre");
+                                    double productosPrecio = resultSet.getDouble("Productos_Precio");
+
+                                    // Agregar fila a la tabla con cantidad predeterminada de 1
+                                    tableModel.addRow(new Object[]{productoId, productosNombre, 1, productosPrecio, productosPrecio});
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Producto no encontrado.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                                }
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Error al conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    // Salimos del bucle si el ID es válido y la operación se completó
+                    break;
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+
 
         // Modificar el panel de botones para que ocupe solo la mitad superior
         gbc.gridx = 0;
@@ -420,11 +470,22 @@ public class MainFrame extends JFrame {
             totalConIvaField.setText(String.format("%.2f", totalConIva));
         });
 
-        deleteButton.addActionListener(e -> {
-            // Solicitar ID del producto a eliminar
-            String idInput = JOptionPane.showInputDialog(this, "Ingrese el ID del producto que desea eliminar:", "Eliminar Producto", JOptionPane.QUESTION_MESSAGE);
 
-            if (idInput != null && !idInput.trim().isEmpty()) {
+        deleteButton.addActionListener(e -> {
+            while (true) {
+                // Solicitar ID del producto a eliminar
+                String idInput = JOptionPane.showInputDialog(this, "Ingrese el ID del producto que desea eliminar:", "Eliminar Producto", JOptionPane.QUESTION_MESSAGE);
+
+                if (idInput == null) {
+                    // Si el usuario cancela la entrada, salimos del bucle
+                    return;
+                }
+
+                if (idInput.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+
                 try {
                     int productId = Integer.parseInt(idInput.trim());
 
@@ -441,13 +502,15 @@ public class MainFrame extends JFrame {
                     if (!found) {
                         JOptionPane.showMessageDialog(this, "Producto con ID " + productId + " no encontrado en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
+
+                    // Salimos del bucle si el ID es válido y la operación se completó
+                    break;
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "ID no ingresado.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
+
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -456,7 +519,7 @@ public class MainFrame extends JFrame {
         facturacionPanel.add(tableScrollPane, gbc);
 
         fechaField.setText(LocalDate.now().toString());
-        nroautorizacionField.setText(generateRandomString(20));
+        nroautorizacionField.setText(generateRandomString());
 
         guardarButton.addActionListener(e -> {
             String razonSocial = razonSocialField.getText();
@@ -472,6 +535,27 @@ public class MainFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos y agregue productos a la factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+
+
+        nuevaFacturaButton.addActionListener(evt -> {
+            // Limpiar campos y tabla para nueva factura
+            clienteIdField.setText("");
+            clienteNombreField.setText("");
+            clienteApellidoField.setText("");
+            clienteCorreoField.setText("");
+            clienteTelefonoField.setText("");
+            clienteDireccionField.setText("");
+            fechaField.setText(LocalDate.now().toString());
+            nroautorizacionField.setText(generateRandomString());
+
+
+
+            // Limpiar la tabla
+            tableModel.setRowCount(0);
+
+
+        });
+
 
             // Calcular los totales
             double totalSinIva = 0.0;
@@ -552,8 +636,9 @@ public class MainFrame extends JFrame {
         mainPanel.add(scrollPane, "facturacionPanel");
     }
 
-    // Generar un string aleatorio
-    public static String generateRandomString(int length) {
+    // Generar un string aleatorio de 10 caracteres alfanuméricos
+    public static String generateRandomString() {
+        int length = 10;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
@@ -562,8 +647,6 @@ public class MainFrame extends JFrame {
         }
         return sb.toString();
     }
-
-
 
 
     private void createClientesPanel() {
@@ -694,7 +777,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void addClient() {
+    public void addClient() {
         JTextField firstNameField = new JTextField(10);
         JTextField lastNameField = new JTextField(10);
         JTextField emailField = new JTextField(10);
@@ -716,6 +799,13 @@ public class MainFrame extends JFrame {
 
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Añadir Cliente", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
+            // Validación para asegurarse de que ningún campo esté vacío
+            if (firstNameField.getText().trim().isEmpty() || lastNameField.getText().trim().isEmpty() ||
+                    emailField.getText().trim().isEmpty() || phoneField.getText().trim().isEmpty() || addressField.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios. Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Clientes (Clientes_Nombre, Clientes_Apellido, Clientes_Correo, Clientes_Telefono, Clientes_Direccion) VALUES (?, ?, ?, ?, ?)")) {
                 preparedStatement.setString(1, firstNameField.getText());
@@ -732,44 +822,118 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void editClient() {
-        String id = JOptionPane.showInputDialog("Ingrese el ID del Cliente a editar:");
-        if (id != null && !id.trim().isEmpty()) {
+    public void editClient() {
+        String id;
+        while (true) {
+            id = JOptionPane.showInputDialog("Ingrese el ID del Cliente a editar:");
+
+            // Si el usuario cancela la entrada o no ingresa nada, mostramos un mensaje de error y salimos
+            if (id == null || id.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Verificamos si el ID es un número válido
+            try {
+                int clientId = Integer.parseInt(id.trim());
+                // Si hemos llegado aquí, el ID es válido, salimos del bucle
+                break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Clientes WHERE Clientes_ID = ?")) {
+            preparedStatement.setInt(1, Integer.parseInt(id.trim()));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                JTextField firstNameField = new JTextField(resultSet.getString("Clientes_Nombre"), 10);
+                JTextField lastNameField = new JTextField(resultSet.getString("Clientes_Apellido"), 10);
+                JTextField emailField = new JTextField(resultSet.getString("Clientes_Correo"), 10);
+                JTextField phoneField = new JTextField(resultSet.getString("Clientes_Telefono"), 10);
+                JTextField addressField = new JTextField(resultSet.getString("Clientes_Direccion"), 10);
+
+                JPanel myPanel = new JPanel();
+                myPanel.setLayout(new GridLayout(5, 2));
+                myPanel.add(new JLabel("Nombre:"));
+                myPanel.add(firstNameField);
+                myPanel.add(new JLabel("Apellido:"));
+                myPanel.add(lastNameField);
+                myPanel.add(new JLabel("Correo:"));
+                myPanel.add(emailField);
+                myPanel.add(new JLabel("Teléfono:"));
+                myPanel.add(phoneField);
+                myPanel.add(new JLabel("Dirección:"));
+                myPanel.add(addressField);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel, "Editar Cliente", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
+                    try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE Clientes SET Clientes_Nombre = ?, Clientes_Apellido = ?, Clientes_Correo = ?, Clientes_Telefono = ?, Clientes_Direccion = ? WHERE Clientes_ID = ?")) {
+                        updateStatement.setString(1, firstNameField.getText());
+                        updateStatement.setString(2, lastNameField.getText());
+                        updateStatement.setString(3, emailField.getText());
+                        updateStatement.setString(4, phoneField.getText());
+                        updateStatement.setString(5, addressField.getText());
+                        updateStatement.setInt(6, Integer.parseInt(id.trim()));
+                        updateStatement.executeUpdate();
+                        fetchDataFromDatabase("Clientes", clientesTable, "Clientes_ID", "Clientes_Nombre", "Clientes_Apellido", "Clientes_Correo", "Clientes_Telefono", "Clientes_Direccion");
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void deleteClient() {
+        String id;
+        while (true) {
+            id = JOptionPane.showInputDialog("Ingrese el ID del Cliente a eliminar:");
+
+            // Si el usuario cancela la entrada o no ingresa nada, mostramos un mensaje de error y salimos
+            if (id == null || id.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Verificamos si el ID es un número válido
+            try {
+                int clientId = Integer.parseInt(id.trim());
+                // Si hemos llegado aquí, el ID es válido, salimos del bucle
+                break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        try {
+            int clientId = Integer.parseInt(id.trim());
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Clientes WHERE Clientes_ID = ?")) {
-                preparedStatement.setInt(1, Integer.parseInt(id));
+                preparedStatement.setInt(1, clientId);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
-                    JTextField firstNameField = new JTextField(resultSet.getString("Clientes_Nombre"), 10);
-                    JTextField lastNameField = new JTextField(resultSet.getString("Clientes_Apellido"), 10);
-                    JTextField emailField = new JTextField(resultSet.getString("Clientes_Correo"), 10);
-                    JTextField phoneField = new JTextField(resultSet.getString("Clientes_Telefono"), 10);
-                    JTextField addressField = new JTextField(resultSet.getString("Clientes_Direccion"), 10);
+                    // Mostrar los datos del cliente
+                    String clientInfo = "Nombre: " + resultSet.getString("Clientes_Nombre") +
+                            "\nApellido: " + resultSet.getString("Clientes_Apellido") +
+                            "\nCorreo: " + resultSet.getString("Clientes_Correo") +
+                            "\nTeléfono: " + resultSet.getString("Clientes_Telefono") +
+                            "\nDirección: " + resultSet.getString("Clientes_Direccion");
 
-                    JPanel myPanel = new JPanel();
-                    myPanel.setLayout(new GridLayout(5, 2));
-                    myPanel.add(new JLabel("Nombre:"));
-                    myPanel.add(firstNameField);
-                    myPanel.add(new JLabel("Apellido:"));
-                    myPanel.add(lastNameField);
-                    myPanel.add(new JLabel("Correo:"));
-                    myPanel.add(emailField);
-                    myPanel.add(new JLabel("Teléfono:"));
-                    myPanel.add(phoneField);
-                    myPanel.add(new JLabel("Dirección:"));
-                    myPanel.add(addressField);
+                    int confirm = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el siguiente cliente?\n\n" + clientInfo, "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        // Eliminar el cliente
+                        try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM Clientes WHERE Clientes_ID = ?")) {
+                            deleteStatement.setInt(1, clientId);
+                            deleteStatement.executeUpdate();
 
-                    int result = JOptionPane.showConfirmDialog(null, myPanel, "Editar Cliente", JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE Clientes SET Clientes_Nombre = ?, Clientes_Apellido = ?, Clientes_Correo = ?, Clientes_Telefono = ?, Clientes_Direccion = ? WHERE Clientes_ID = ?")) {
-                            updateStatement.setString(1, firstNameField.getText());
-                            updateStatement.setString(2, lastNameField.getText());
-                            updateStatement.setString(3, emailField.getText());
-                            updateStatement.setString(4, phoneField.getText());
-                            updateStatement.setString(5, addressField.getText());
-                            updateStatement.setInt(6, Integer.parseInt(id));
-                            updateStatement.executeUpdate();
+                            // Actualizar la tabla
                             fetchDataFromDatabase("Clientes", clientesTable, "Clientes_ID", "Clientes_Nombre", "Clientes_Apellido", "Clientes_Correo", "Clientes_Telefono", "Clientes_Direccion");
+                            JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 } else {
@@ -779,48 +943,8 @@ public class MainFrame extends JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-    }
-
-    private void deleteClient() {
-        String id = JOptionPane.showInputDialog("Ingrese el ID del Cliente a eliminar:");
-        if (id != null && !id.trim().isEmpty()) {
-            try {
-                int clientId = Integer.parseInt(id); // Asegúrate de que el ID sea un número válido
-                try (Connection connection = DatabaseConnection.getConnection();
-                     PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Clientes WHERE Clientes_ID = ?")) {
-                    preparedStatement.setInt(1, clientId);
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    if (resultSet.next()) {
-                        // Mostrar los datos del cliente
-                        String clientInfo = "Nombre: " + resultSet.getString("Clientes_Nombre") +
-                                "\nApellido: " + resultSet.getString("Clientes_Apellido") +
-                                "\nCorreo: " + resultSet.getString("Clientes_Correo") +
-                                "\nTeléfono: " + resultSet.getString("Clientes_Telefono") +
-                                "\nDirección: " + resultSet.getString("Clientes_Direccion");
-
-                        int confirm = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el siguiente cliente?\n\n" + clientInfo, "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-                        if (confirm == JOptionPane.YES_OPTION) {
-                            // Eliminar el cliente
-                            try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM Clientes WHERE Clientes_ID = ?")) {
-                                deleteStatement.setInt(1, clientId);
-                                deleteStatement.executeUpdate();
-
-                                // Actualizar la tabla
-                                fetchDataFromDatabase("Clientes", clientesTable, "Clientes_ID", "Clientes_Nombre", "Clientes_Apellido", "Clientes_Correo", "Clientes_Telefono", "Clientes_Direccion");
-                                JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                            }
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -829,12 +953,25 @@ public class MainFrame extends JFrame {
         JTextField categoryField = new JTextField(10);
         JTextField priceField = new JTextField(10);
         JTextField brandField = new JTextField(10);
-        JTextField quantityUnitField = new JTextField(10);
-        JTextField ivaField = new JTextField(10);
-        JTextField stockField = new JTextField(10);
+
+        // Añadir un InputVerifier al campo de precio
+        priceField.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField textField = (JTextField) input;
+                String text = textField.getText();
+                try {
+                    Double.parseDouble(text);
+                    return true;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese un valor decimal válido para el precio.", "Entrada inválida", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        });
 
         JPanel myPanel = new JPanel();
-        myPanel.setLayout(new GridLayout(7, 2));
+        myPanel.setLayout(new GridLayout(4, 2));
         myPanel.add(new JLabel("Nombre:"));
         myPanel.add(nameField);
         myPanel.add(new JLabel("Categoría:"));
@@ -843,79 +980,156 @@ public class MainFrame extends JFrame {
         myPanel.add(priceField);
         myPanel.add(new JLabel("Marca:"));
         myPanel.add(brandField);
-        myPanel.add(new JLabel("Cantidad/Unidad:"));
-        myPanel.add(quantityUnitField);
-        myPanel.add(new JLabel("IVA:"));
-        myPanel.add(ivaField);
-        myPanel.add(new JLabel("Stock:"));
-        myPanel.add(stockField);
 
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Añadir Producto", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            try (Connection connection = DatabaseConnection.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Productos (Productos_Nombre, Productos_Categoria, Productos_Precio, Productos_Marca, Productos_Cantidad_Unidad, Productos_IVA, Productos_Stock) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-                preparedStatement.setString(1, nameField.getText());
-                preparedStatement.setString(2, categoryField.getText());
-                preparedStatement.setDouble(3, Double.parseDouble(priceField.getText()));
-                preparedStatement.setString(4, brandField.getText());
-                preparedStatement.setString(5, quantityUnitField.getText());
-                preparedStatement.setDouble(6, Double.parseDouble(ivaField.getText()));
-                preparedStatement.setInt(7, Integer.parseInt(stockField.getText()));
-                preparedStatement.executeUpdate();
-                fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca", "Productos_Cantidad_Unidad", "Productos_IVA", "Productos_Stock");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al añadir producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            // Verificar que todos los campos no estén vacíos y que el precio sea válido
+            if (!nameField.getText().trim().isEmpty() && !categoryField.getText().trim().isEmpty() && !priceField.getText().trim().isEmpty() && !brandField.getText().trim().isEmpty()) {
+                if (priceField.getInputVerifier().verify(priceField)) {
+                    try (Connection connection = DatabaseConnection.getConnection();
+                         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Productos (Productos_Nombre, Productos_Categoria, Productos_Precio, Productos_Marca) VALUES (?, ?, ?, ?)")) {
+                        preparedStatement.setString(1, nameField.getText());
+                        preparedStatement.setString(2, categoryField.getText());
+                        preparedStatement.setDouble(3, Double.parseDouble(priceField.getText()));
+                        preparedStatement.setString(4, brandField.getText());
+                        preparedStatement.executeUpdate();
+                        fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca");
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Error al añadir producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void editProduct() {
-        String id = JOptionPane.showInputDialog("Ingrese el ID del Producto a editar:");
-        if (id != null && !id.trim().isEmpty()) {
+
+
+    public void editProduct() {
+        String id;
+        while (true) {
+            id = JOptionPane.showInputDialog("Ingrese el ID del Producto a editar:");
+
+            // Si el usuario cancela la entrada o no ingresa nada, mostramos un mensaje de error y salimos
+            if (id == null || id.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Verificamos si el ID es un número válido
+            try {
+                int productId = Integer.parseInt(id.trim());
+                // Si hemos llegado aquí, el ID es válido, salimos del bucle
+                break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Productos WHERE Productos_ID = ?")) {
+            preparedStatement.setInt(1, Integer.parseInt(id.trim()));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                JTextField nameField = new JTextField(resultSet.getString("Productos_Nombre"), 10);
+                JTextField categoryField = new JTextField(resultSet.getString("Productos_Categoria"), 10);
+                JTextField priceField = new JTextField(resultSet.getDouble("Productos_Precio") + "", 10);
+                JTextField brandField = new JTextField(resultSet.getString("Productos_Marca"), 10);
+
+                JPanel myPanel = new JPanel();
+                myPanel.setLayout(new GridLayout(4, 2));
+                myPanel.add(new JLabel("Nombre:"));
+                myPanel.add(nameField);
+                myPanel.add(new JLabel("Categoría:"));
+                myPanel.add(categoryField);
+                myPanel.add(new JLabel("Precio:"));
+                myPanel.add(priceField);
+                myPanel.add(new JLabel("Marca:"));
+                myPanel.add(brandField);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel, "Editar Producto", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
+                    // Validación de campos vacíos
+                    if (nameField.getText().trim().isEmpty() || categoryField.getText().trim().isEmpty() ||
+                            priceField.getText().trim().isEmpty() || brandField.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios. Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Validación de precio como decimal
+                    try {
+                        double price = Double.parseDouble(priceField.getText().trim());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Precio inválido. Por favor, ingrese un número decimal válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE Productos SET Productos_Nombre = ?, Productos_Categoria = ?, Productos_Precio = ?, Productos_Marca = ? WHERE Productos_ID = ?")) {
+                        updateStatement.setString(1, nameField.getText());
+                        updateStatement.setString(2, categoryField.getText());
+                        updateStatement.setDouble(3, Double.parseDouble(priceField.getText().trim()));
+                        updateStatement.setString(4, brandField.getText());
+                        updateStatement.setInt(5, Integer.parseInt(id.trim()));
+                        updateStatement.executeUpdate();
+                        fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca");
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    public void deleteProduct() {
+        String id;
+        while (true) {
+            id = JOptionPane.showInputDialog("Ingrese el ID del Producto a eliminar:");
+
+            // Si el usuario cancela la entrada o no ingresa nada, salimos del bucle
+            if (id == null || id.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Debe ingresar un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Verificamos si el ID es un número válido
+            try {
+                int productId = Integer.parseInt(id.trim());
+                // Si hemos llegado aquí, el ID es válido, salimos del bucle
+                break;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        try {
+            int productId = Integer.parseInt(id.trim());
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Productos WHERE Productos_ID = ?")) {
-                preparedStatement.setInt(1, Integer.parseInt(id));
+                preparedStatement.setInt(1, productId);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
-                    JTextField nameField = new JTextField(resultSet.getString("Productos_Nombre"), 10);
-                    JTextField categoryField = new JTextField(resultSet.getString("Productos_Categoria"), 10);
-                    JTextField priceField = new JTextField(resultSet.getDouble("Productos_Precio") + "", 10);
-                    JTextField brandField = new JTextField(resultSet.getString("Productos_Marca"), 10);
-                    JTextField quantityUnitField = new JTextField(resultSet.getString("Productos_Cantidad_Unidad"), 10);
-                    JTextField ivaField = new JTextField(resultSet.getDouble("Productos_IVA") + "", 10);
-                    JTextField stockField = new JTextField(resultSet.getInt("Productos_Stock") + "", 10);
+                    // Mostrar los datos del producto
+                    String productInfo = "Nombre: " + resultSet.getString("Productos_Nombre") +
+                            "\nCategoría: " + resultSet.getString("Productos_Categoria") +
+                            "\nPrecio: " + resultSet.getDouble("Productos_Precio") +
+                            "\nMarca: " + resultSet.getString("Productos_Marca");
 
-                    JPanel myPanel = new JPanel();
-                    myPanel.setLayout(new GridLayout(7, 2));
-                    myPanel.add(new JLabel("Nombre:"));
-                    myPanel.add(nameField);
-                    myPanel.add(new JLabel("Categoría:"));
-                    myPanel.add(categoryField);
-                    myPanel.add(new JLabel("Precio:"));
-                    myPanel.add(priceField);
-                    myPanel.add(new JLabel("Marca:"));
-                    myPanel.add(brandField);
-                    myPanel.add(new JLabel("Cantidad/Unidad:"));
-                    myPanel.add(quantityUnitField);
-                    myPanel.add(new JLabel("IVA:"));
-                    myPanel.add(ivaField);
-                    myPanel.add(new JLabel("Stock:"));
-                    myPanel.add(stockField);
+                    int confirm = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el siguiente producto?\n\n" + productInfo, "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        // Eliminar el producto
+                        try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM Productos WHERE Productos_ID = ?")) {
+                            deleteStatement.setInt(1, productId);
+                            deleteStatement.executeUpdate();
 
-                    int result = JOptionPane.showConfirmDialog(null, myPanel, "Editar Producto", JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE Productos SET Productos_Nombre = ?, Productos_Categoria = ?, Productos_Precio = ?, Productos_Marca = ?, Productos_Cantidad_Unidad = ?, Productos_IVA = ?, Productos_Stock = ? WHERE Productos_ID = ?")) {
-                            updateStatement.setString(1, nameField.getText());
-                            updateStatement.setString(2, categoryField.getText());
-                            updateStatement.setDouble(3, Double.parseDouble(priceField.getText()));
-                            updateStatement.setString(4, brandField.getText());
-                            updateStatement.setString(5, quantityUnitField.getText());
-                            updateStatement.setDouble(6, Double.parseDouble(ivaField.getText()));
-                            updateStatement.setInt(7, Integer.parseInt(stockField.getText()));
-                            updateStatement.setInt(8, Integer.parseInt(id));
-                            updateStatement.executeUpdate();
-                            fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca", "Productos_Cantidad_Unidad", "Productos_IVA", "Productos_Stock");
+                            // Actualizar la tabla
+                            fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca");
+                            JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 } else {
@@ -925,54 +1139,10 @@ public class MainFrame extends JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    private void deleteProduct() {
-        String id = JOptionPane.showInputDialog("Ingrese el ID del Producto a eliminar:");
-        if (id != null && !id.trim().isEmpty()) {
-            try {
-                int productId = Integer.parseInt(id); // Asegúrate de que el ID sea un número válido
-                try (Connection connection = DatabaseConnection.getConnection();
-                     PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Productos WHERE Productos_ID = ?")) {
-                    preparedStatement.setInt(1, productId);
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    if (resultSet.next()) {
-                        // Mostrar los datos del producto
-                        String productInfo = "Nombre: " + resultSet.getString("Productos_Nombre") +
-                                "\nCategoría: " + resultSet.getString("Productos_Categoria") +
-                                "\nPrecio: " + resultSet.getDouble("Productos_Precio") +
-                                "\nMarca: " + resultSet.getString("Productos_Marca") +
-                                "\nCantidad/Unidad: " + resultSet.getString("Productos_Cantidad_Unidad") +
-                                "\nIVA: " + resultSet.getDouble("Productos_IVA") +
-                                "\nStock: " + resultSet.getInt("Productos_Stock");
-
-                        int confirm = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el siguiente producto?\n\n" + productInfo, "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-                        if (confirm == JOptionPane.YES_OPTION) {
-                            // Eliminar el producto
-                            try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM Productos WHERE Productos_ID = ?")) {
-                                deleteStatement.setInt(1, productId);
-                                deleteStatement.executeUpdate();
-
-                                // Actualizar la tabla
-                                fetchDataFromDatabase("Productos", productosTable, "Productos_ID", "Productos_Nombre", "Productos_Categoria", "Productos_Precio", "Productos_Marca", "Productos_Cantidad_Unidad", "Productos_IVA", "Productos_Stock");
-                                JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                            }
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error al acceder a la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID inválido. Por favor, ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
